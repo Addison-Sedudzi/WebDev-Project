@@ -4,6 +4,7 @@ import GradeSelector from './GradeSelector';
 import ResultDisplay from './ResultDisplay';
 import { convertCWAToGPA, getAcademicStanding } from '../utils/conversionAlgorithm';
 import { useNavigate } from 'react-router-dom';
+import { useHistory } from '../hooks/useHistory';
 
 const CWAConverter = () => {
     const [cwa, setCwa] = useState('');
@@ -12,6 +13,7 @@ const CWAConverter = () => {
     const [error, setError] = useState('');
     const [result, setResult] = useState(null);
     const [standing, setStanding] = useState(null);
+    const { addEntry } = useHistory();
 
     const navigate = useNavigate();
 
@@ -40,21 +42,15 @@ const CWAConverter = () => {
         }
     }, [cwa, system]);
 
-    const handleSave = () => {
-        if (result && cwa && credits) {
-            const historyItem = {
-                id: Date.now(),
-                date: new Date().toLocaleDateString(),
+    const handleSave = async () => {
+        if (result && cwa) {
+            await addEntry({
                 cwa: parseFloat(cwa),
                 credits: parseInt(credits) || 0,
                 gpa: result.gpa,
-                system: system
-            };
-
-            const existingHistory = JSON.parse(localStorage.getItem('gradesync_history') || '[]');
-            localStorage.setItem('gradesync_history', JSON.stringify([historyItem, ...existingHistory]));
-
-            // Auto-redirect to Scholarship Checker automatically after success, as requested
+                system: system,
+                source: 'converter',
+            });
             navigate('/scholarships');
         }
     };

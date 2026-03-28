@@ -95,10 +95,11 @@ const GoalTracker = () => {
 
     return (
         <div className="main-content">
-            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-                <h1 className="page-title">Academic Goal Tracker</h1>
-                <p style={{ maxWidth: '600px', margin: '0 auto', color: 'var(--color-subtext)' }}>
-                    Set clear academic targets, track milestones, and stay motivated throughout the semester.
+            <div style={{ marginBottom: '32px' }}>
+                <span className="badge">Goals</span>
+                <h1 className="page-title" style={{ marginTop: '10px', marginBottom: '8px' }}>Goal Tracker</h1>
+                <p style={{ color: 'var(--color-subtext)', fontSize: '15px', maxWidth: '520px' }}>
+                    Set academic targets, track milestones, and stay on course throughout your semester.
                 </p>
             </div>
 

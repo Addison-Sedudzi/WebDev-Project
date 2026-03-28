@@ -3,6 +3,7 @@ import CourseRow from './CourseRow';
 import ResultDisplay from './ResultDisplay';
 import { PlusCircle, CheckCircle } from 'lucide-react';
 import { convertCWAToGPA, getAcademicStanding } from '../utils/conversionAlgorithm';
+import { useHistory } from '../hooks/useHistory';
 
 const SimulatorTable = () => {
     const [courses, setCourses] = useState([
@@ -13,6 +14,7 @@ const SimulatorTable = () => {
     const [result, setResult] = useState(null);
     const [standing, setStanding] = useState(null);
     const [totals, setTotals] = useState({ creditHours: 0, cwa: 0 });
+    const { addEntry } = useHistory();
     const [saveSuccess, setSaveSuccess] = useState(false);
 
     const addCourse = () => {
@@ -62,22 +64,15 @@ const SimulatorTable = () => {
         }
     }, [courses]);
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (result && totals.cwa > 0) {
-            const historyItem = {
-                id: Date.now(),
-                date: new Date().toLocaleDateString(),
+            await addEntry({
                 cwa: parseFloat(totals.cwa),
                 credits: totals.creditHours,
                 gpa: result.gpa,
                 system: '4.0',
-                source: 'simulator'
-            };
-
-            const existingHistory = JSON.parse(localStorage.getItem('gradesync_history') || '[]');
-            localStorage.setItem('gradesync_history', JSON.stringify([historyItem, ...existingHistory]));
-
-            // Show success feedback
+                source: 'simulator',
+            });
             setSaveSuccess(true);
             setTimeout(() => setSaveSuccess(false), 3000);
         }

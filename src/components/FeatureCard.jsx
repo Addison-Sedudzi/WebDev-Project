@@ -1,17 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Tilt3D from './Tilt3D';
 
 const FeatureCard = ({ title, description, icon: Icon, linkTo }) => {
     return (
-        <Link to={linkTo} style={{ textDecoration: 'none' }}>
-            <div className="card" style={styles.card}>
-                <div style={styles.iconWrapper}>
-                    <Icon size={32} color="var(--color-primary)" />
+        <Tilt3D intensity={6} scale={1.04}>
+            <Link to={linkTo} style={{ textDecoration: 'none' }}>
+                <div className="card" style={styles.card}>
+                    <div style={styles.iconWrapper}>
+                        <Icon size={32} color="var(--color-primary)" />
+                    </div>
+                    <h3 style={styles.title}>{title}</h3>
+                    <p style={styles.description}>{description}</p>
                 </div>
-                <h3 style={styles.title}>{title}</h3>
-                <p style={styles.description}>{description}</p>
-            </div>
-        </Link>
+            </Link>
+        </Tilt3D>
     );
 };
 

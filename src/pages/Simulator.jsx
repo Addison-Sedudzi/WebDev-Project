@@ -4,10 +4,11 @@ import SimulatorTable from '../components/SimulatorTable';
 const Simulator = () => {
     return (
         <div className="main-content">
-            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-                <h1 className="page-title">Course Grade Simulator</h1>
-                <p style={{ maxWidth: '600px', margin: '0 auto', color: 'var(--color-subtext)' }}>
-                    'What-If' Mode: Experiment with different target grades for your current or upcoming courses to see exactly how they impact your overall CWA.
+            <div style={{ marginBottom: '32px' }}>
+                <span className="badge">What-If</span>
+                <h1 className="page-title" style={{ marginTop: '10px', marginBottom: '8px' }}>Grade Simulator</h1>
+                <p style={{ color: 'var(--color-subtext)', fontSize: '15px', maxWidth: '520px' }}>
+                    Enter your courses and target grades to instantly see how they affect your CWA — before results come out.
                 </p>
             </div>
 

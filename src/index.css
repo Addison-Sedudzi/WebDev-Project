@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
 :root {
   /* HCI Color Palette requested by guidelines */
@@ -34,21 +34,29 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-/* Dark Mode Theme */
+/* Dark Mode Theme — "Subtle Anchor" design system
+   Principles:
+   · Very deep forest-green background (near-black) so content cards pop
+   · Bright Mint (#6EE7B7) as sole accent — headings, icons, brand
+   · Crisp off-white (#F3F4F6) body text — 100% opacity, max legibility
+   · Light grey (#D1D5DB) subtext — clear hierarchy without harshness
+   · Footer darker than body — "grounding anchor", not a separate block
+   · All contrast ratios ≥ 4.5:1 (WCAG AA)
+*/
 [data-theme="dark"] {
-  --color-primary: #4CAF50;
-  --color-accent: #66BB6A;
-  --color-highlight: #2E7D32;
-  --color-background: #121212;
-  --color-warning: #FFC107;
-  --color-danger: #EF5350;
-  --color-text: #E0E0E0;
-  --color-subtext: #9E9E9E;
-  --color-white: #1E1E1E;
+  --color-primary: #6EE7B7;      /* Bright Mint — headings, icons, brand accent */
+  --color-accent: #34D399;       /* Deeper Mint — interactive/hover states */
+  --color-highlight: #064e3b;    /* Deep Forest — badge/chip backgrounds */
+  --color-background: #061a0d;   /* Very Deep Forest Green — main canvas */
+  --color-warning: #FCD34D;      /* Warm amber — legible on dark */
+  --color-danger: #F87171;       /* Soft coral — legible on dark */
+  --color-text: #F3F4F6;         /* Off-White — crisp body text, ~15:1 contrast */
+  --color-subtext: #D1D5DB;      /* Light Grey — secondary text, ~10:1 contrast */
+  --color-white: #0d2416;        /* Card Surface — elevated above background */
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.6);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.75);
 }
 
 * {
@@ -77,14 +85,31 @@ h6 {
 }
 
 h1.page-title {
-  font-size: 32px;
-  font-weight: 700;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
 }
 
 h2.section-heading {
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--color-accent);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+h2.section-heading::before {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 18px;
+  background: linear-gradient(to bottom, #1B5E20, #A5D6A7);
+  border-radius: 4px;
+  flex-shrink: 0;
 }
 
 p,
@@ -163,66 +188,79 @@ a:hover {
   border-radius: var(--border-radius-card);
   padding: var(--padding-card);
   box-shadow: var(--shadow-sm);
-  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease, background-color 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: box-shadow var(--transition-speed) ease, background-color 0.3s ease;
+  margin-bottom: 20px;
 }
 
 .card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.card-accent {
+  border-left: 3px solid var(--color-primary);
 }
 
 .btn-primary {
-  background-color: var(--color-primary);
-  color: var(--color-white);
-  padding: 12px 24px;
-  border-radius: 8px;
+  background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+  color: #fff;
+  padding: 11px 22px;
+  border-radius: 10px;
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
+  font-size: 14px;
   border: none;
   cursor: pointer;
-  transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+  transition: filter var(--transition-speed) ease, transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  box-shadow: 0 2px 8px rgba(27, 94, 32, 0.3);
+  letter-spacing: 0.2px;
 }
 
 .btn-primary:hover {
-  background-color: var(--color-accent);
+  filter: brightness(1.1);
   transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(27, 94, 32, 0.4);
 }
 
 .btn-primary:disabled {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: not-allowed;
   transform: none;
+  filter: none;
+  box-shadow: none;
 }
 
 .btn-secondary {
   background-color: transparent;
-  color: var(--color-accent);
-  padding: 12px 24px;
-  border-radius: 8px;
+  color: var(--color-primary);
+  padding: 11px 22px;
+  border-radius: 10px;
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
-  border: 2px solid var(--color-accent);
+  font-size: 14px;
+  border: 1.5px solid var(--color-primary);
   cursor: pointer;
   transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .btn-secondary:hover {
-  background-color: var(--color-highlight);
-  color: var(--color-primary);
-  border-color: var(--color-primary);
+  background-color: rgba(165, 214, 167, 0.25);
 }
 
 /* Inputs */
 input,
 select {
   width: 100%;
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid var(--color-subtext);
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1.5px solid #E5E7EB;
   font-family: 'Poppins', sans-serif;
   font-size: 16px;
   background-color: var(--color-white);
@@ -234,8 +272,8 @@ select {
 input:focus,
 select:focus {
   outline: none;
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(27, 94, 32, 0.12);
 }
 
 input::placeholder {
@@ -253,21 +291,146 @@ input::placeholder {
   }
 }
 
+/* Badge utility */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  background-color: rgba(165, 214, 167, 0.3);
+  color: var(--color-primary);
+  border: 1px solid #A5D6A7;
+}
+
+.badge-warn {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #92400E;
+  border-color: #FDE68A;
+}
+
+.badge-danger {
+  background-color: rgba(220, 38, 38, 0.1);
+  color: #991B1B;
+  border-color: #FCA5A5;
+}
+
+/* Large display number */
+.stat-number {
+  font-size: 52px;
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1;
+  letter-spacing: -1.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Divider */
+.section-divider {
+  border: none;
+  border-top: 1px solid rgba(0,0,0,0.07);
+  margin: 28px 0;
+}
+
 /* Smooth scrollbar for dark mode */
 [data-theme="dark"] ::-webkit-scrollbar {
   width: 8px;
 }
 
 [data-theme="dark"] ::-webkit-scrollbar-track {
-  background: #1E1E1E;
+  background: #061a0d;
 }
 
 [data-theme="dark"] ::-webkit-scrollbar-thumb {
-  background: #4CAF50;
+  background: #34D399;
   border-radius: 4px;
 }
 
-/* Dark mode button text fix */
+/* Dark mode component overrides */
+[data-theme="dark"] .card {
+  border-color: rgba(110, 231, 183, 0.1);
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] select {
+  border-color: rgba(255, 255, 255, 0.1);
+  background-color: #0d2416;
+}
+
+[data-theme="dark"] input:focus,
+[data-theme="dark"] select:focus {
+  border-color: #6EE7B7;
+  box-shadow: 0 0 0 3px rgba(110, 231, 183, 0.15);
+}
+
+[data-theme="dark"] input::placeholder {
+  color: #9ca3af;
+}
+
+/* Primary button */
 [data-theme="dark"] .btn-primary {
-  color: #121212;
+  background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(6, 95, 70, 0.4);
+}
+
+/* Secondary button */
+[data-theme="dark"] .btn-secondary {
+  border-color: #6EE7B7;
+  color: #6EE7B7;
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  background-color: rgba(110, 231, 183, 0.08);
+}
+
+/* Section heading accent bar */
+[data-theme="dark"] h2.section-heading::before {
+  background: linear-gradient(to bottom, #34D399, #6EE7B7);
+}
+
+/* Divider */
+[data-theme="dark"] .section-divider {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Badges */
+[data-theme="dark"] .badge {
+  background-color: rgba(110, 231, 183, 0.1);
+  border-color: rgba(110, 231, 183, 0.2);
+  color: #6EE7B7;
+}
+
+[data-theme="dark"] .badge-warn {
+  background-color: rgba(252, 211, 77, 0.1);
+  color: #FCD34D;
+  border-color: rgba(252, 211, 77, 0.25);
+}
+
+[data-theme="dark"] .badge-danger {
+  background-color: rgba(248, 113, 113, 0.1);
+  color: #F87171;
+  border-color: rgba(248, 113, 113, 0.25);
+}
+
+/* Footer — the "Anchor": darker than body, never uses --color-primary as bg */
+[data-theme="dark"] footer {
+  background-color: #030d06 !important;
+  border-top: 1px solid rgba(110, 231, 183, 0.08);
+}
+
+[data-theme="dark"] footer h3 {
+  color: #6EE7B7 !important;
+}
+
+[data-theme="dark"] footer p {
+  color: #D1D5DB !important;
+  opacity: 1 !important;
+}
+
+[data-theme="dark"] footer a {
+  color: #6EE7B7 !important;
 }

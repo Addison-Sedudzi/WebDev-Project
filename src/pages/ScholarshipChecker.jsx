@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ScholarshipCard from '../components/ScholarshipCard';
+import { useHistory } from '../hooks/useHistory';
 
 // Hardcoded realistic dataset for KNUST students
 const mockScholarships = [
@@ -70,25 +71,29 @@ const mockScholarships = [
 
 const ScholarshipChecker = () => {
     const [userGpa, setUserGpa] = useState(null);
+    const { history } = useHistory();
 
     useEffect(() => {
-        // Attempt to pull latest GPA from local storage profile
-        const history = JSON.parse(localStorage.getItem('gradesync_history') || '[]');
         if (history.length > 0) {
             setUserGpa(history[0].gpa);
         }
-    }, []);
+    }, [history]);
 
     return (
         <div className="main-content">
-            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-                <h1 className="page-title">Scholarship Eligibility Checker</h1>
-                <p style={{ maxWidth: '600px', margin: '0 auto', color: 'var(--color-subtext)' }}>
+            <div style={{ marginBottom: '32px' }}>
+                <span className="badge">Funding</span>
+                <h1 className="page-title" style={{ marginTop: '10px', marginBottom: '8px' }}>Scholarship Finder</h1>
+                <p style={{ color: 'var(--color-subtext)', fontSize: '15px', maxWidth: '520px' }}>
                     {userGpa
-                        ? `Based on your latest recorded GPA of ${userGpa.toFixed(2)}, here are the opportunities you should target.`
-                        : "Explore global scholarships suited for KNUST graduates. Convert your CWA first to see your personalized eligibility."
-                    }
+                        ? `Showing opportunities matched to your GPA of ${userGpa.toFixed(2)}.`
+                        : 'Convert your CWA first — we\'ll match you to scholarships you can actually win.'}
                 </p>
+                {userGpa && (
+                    <div style={{ marginTop: '12px', display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', borderRadius: '10px', backgroundColor: 'rgba(165,214,167,0.2)', border: '1px solid #A5D6A7' }}>
+                        <span style={{ fontSize: '13px', color: 'var(--color-primary)', fontWeight: 600 }}>Your GPA: {userGpa.toFixed(2)}</span>
+                    </div>
+                )}
             </div>
 
             <div className="grid-container">

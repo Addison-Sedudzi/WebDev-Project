@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from '../hooks/useHistory';
 import { Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -30,13 +31,13 @@ const programAverages = [
 
 const GPAComparison = () => {
     const [userGpa, setUserGpa] = useState('');
+    const { history } = useHistory();
 
     useEffect(() => {
-        const history = JSON.parse(localStorage.getItem('gradesync_history') || '[]');
         if (history.length > 0) {
             setUserGpa(history[0].gpa.toFixed(2));
         }
-    }, []);
+    }, [history]);
 
     const gpaNum = parseFloat(userGpa) || 0;
 
@@ -138,10 +139,11 @@ const GPAComparison = () => {
 
     return (
         <div className="main-content">
-            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-                <h1 className="page-title">GPA Comparison Tool</h1>
-                <p style={{ maxWidth: '600px', margin: '0 auto', color: 'var(--color-subtext)' }}>
-                    See how your GPA compares against average and top-performing students across KNUST programs.
+            <div style={{ marginBottom: '32px' }}>
+                <span className="badge">Analytics</span>
+                <h1 className="page-title" style={{ marginTop: '10px', marginBottom: '8px' }}>GPA Comparison</h1>
+                <p style={{ color: 'var(--color-subtext)', fontSize: '15px', maxWidth: '520px' }}>
+                    See where you stand against average and top-performing students across KNUST programs.
                 </p>
             </div>
 
@@ -194,13 +196,14 @@ const GPAComparison = () => {
             <div style={{
                 marginTop: '24px',
                 padding: '20px',
-                backgroundColor: 'var(--color-primary)',
-                color: 'white',
+                backgroundColor: 'var(--color-white)',
                 borderRadius: '10px',
+                borderLeft: '4px solid var(--color-primary)',
                 textAlign: 'center',
+                boxShadow: 'var(--shadow-sm)',
             }}>
-                <p style={{ margin: 0, fontSize: '14px', color: 'white' }}>
-                    <strong>Note:</strong> Program averages are estimates based on publicly available KNUST academic data.
+                <p style={{ margin: 0, fontSize: '14px', color: 'var(--color-subtext)' }}>
+                    <strong style={{ color: 'var(--color-primary)' }}>Note:</strong> Program averages are estimates based on publicly available KNUST academic data.
                     Individual performance varies by year and cohort.
                 </p>
             </div>

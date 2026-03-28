@@ -13,34 +13,73 @@ Beyond simple conversion, GradeSync serves as an Academic Intelligence Platform 
 *   **Quality Assurance:** Hanaan Duah Ahmed, Appiah Sonia
 
 ## Features
-1. **Landing Page:** Interactive Home with staggered entry animations.
-2. **CWA to GPA Converter:** Real-time conversion algorithm mapping KNUST CWA to GPA, featuring PDF export (`jsPDF`).
-3. **Course Grade Simulator:** Dynamic React form modeling 'what-if' semester scenarios.
-4. **GPA Improvement Planner:** Progress bars determining the required average per semester to hit graduation targets.
-5. **Scholarship Eligibility Checker:** Hardcoded global scholarship dataset tracking eligibility against student profiles.
-6. **GPA Literacy Hub:** Educational content and global grading system comparison tool.
-7. **Student Academic Profile:** `LocalStorage` driven history with `Chart.js` visualizing academic progression.
+1. **Landing Page:** Interactive home with 3D tilt cards, staggered animations, and a live GPA preview card.
+2. **CWA to GPA Converter:** Real-time conversion algorithm mapping KNUST CWA to GPA (4.0 & 5.0 scales), with PDF export.
+3. **Course Grade Simulator:** Dynamic 'what-if' course entry form that instantly recalculates your CWA.
+4. **GPA Improvement Planner:** Determines the required semester average to hit graduation targets.
+5. **Scholarship Eligibility Checker:** Matches student GPA against a curated global scholarship dataset.
+6. **GPA Literacy Hub:** Global grading comparison tool and AI academic advisor (Gradey, powered by Groq).
+7. **Student Academic Profile:** Supabase-persisted history with Chart.js visualizing academic progression.
 8. **University Readiness Score:** Visual probability indicator of admission to universities globally.
+9. **Academic Goal Tracker:** Set milestones, track progress, and stay motivated through the semester.
 
 ## Technology Stack
-*   **Framework:** ReactJS (bootstrapped with Vite)
+*   **Framework:** ReactJS (Vite)
 *   **Routing:** React Router v6
-*   **Styling:** Custom CSS Grid/Flexbox matching the exact rubric rules (Poppins, Deep Green `#1B5E20`)
+*   **Backend & Auth:** Supabase (PostgreSQL, Row Level Security, Auth)
+*   **AI Chatbot:** Groq API (`llama-3.1-8b-instant`) via `src/components/GradeBot.jsx`
+*   **Animations:** Framer Motion (3D tilt, floating hero card, staggered entries)
+*   **Styling:** Custom CSS with Poppins font, Deep Green `#1B5E20` palette, dark mode support
 *   **Data Visualization:** Chart.js (`react-chartjs-2`)
 *   **PDF Generation:** `jsPDF` & `html2canvas`
-*   **State Management:** React Hooks (`useState`, `useEffect`) and LocalStorage persistence.
+
+## Environment Variables
+
+Create a `.env` file at the project root with the following keys (never commit this file):
+
+```
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_GROQ_API_KEY=your_groq_api_key
+```
+
+## Supabase Setup
+
+Run the following SQL in your Supabase project's SQL Editor before first use:
+
+```sql
+CREATE TABLE academic_history (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+    cwa numeric NOT NULL,
+    credits integer DEFAULT 0,
+    gpa numeric NOT NULL,
+    system text DEFAULT '4.0',
+    source text DEFAULT 'converter',
+    created_at timestamptz DEFAULT now() NOT NULL
+);
+
+ALTER TABLE academic_history ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "select_own" ON academic_history FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "insert_own" ON academic_history FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "delete_own" ON academic_history FOR DELETE USING (auth.uid() = user_id);
+
+CREATE OR REPLACE FUNCTION delete_user()
+RETURNS void LANGUAGE plpgsql SECURITY DEFINER
+AS $$ BEGIN DELETE FROM auth.users WHERE id = auth.uid(); END; $$;
+```
 
 ## Run Instructions
 
-1.  **Clone the repository** (or extract the zip):
-2.  Install all dependencies: `npm install`
-3.  Start the development server: `npm run dev`
-4.  Open `http://localhost:5173` in your browser.
+1.  Clone the repository: `git clone <repo-url>`
+2.  Install dependencies: `npm install`
+3.  Create your `.env` file with the keys listed above
+4.  Start the development server: `npm run dev`
+5.  Open `http://localhost:5173` in your browser
 
-## Built To Full Marks Checklist
-*   [x] 8-12px border matching, 24px padding on all cards.
-*   [x] Responsive CSS Grid Layout.
-*   [x] `useNavigate` auto-redirects after conversion to the Scholarship page.
-*   [x] Accessibility `aria-labels` tested on the Converter forms.
-*   [x] Chart tooltips added via `react-chartjs-2`.
-*   [x] Every major algorithm commented logic in `src/utils/conversionAlgorithm.js`.
+## Deploying to Vercel
+
+1. Push to GitHub
+2. Import the repo on [vercel.com](https://vercel.com)
+3. Add the three environment variables in Vercel's project settings
+4. Deploy — `vercel.json` handles SPA client-side routing automatically

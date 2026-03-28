@@ -17,7 +17,7 @@ const Login = () => {
     const { showToast } = useToast();
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
@@ -27,19 +27,15 @@ const Login = () => {
         }
 
         setIsSubmitting(true);
-
-        // Simulate a brief loading state
-        setTimeout(() => {
-            const result = login(email, password, rememberMe);
-            if (result.success) {
-                showToast('Welcome back! 🎉', 'success');
-                navigate('/');
-            } else {
-                setError(result.message);
-                showToast(result.message, 'error');
-            }
-            setIsSubmitting(false);
-        }, 600);
+        const result = await login(email, password);
+        if (result.success) {
+            showToast('Welcome back! 🎉', 'success');
+            navigate('/');
+        } else {
+            setError(result.message);
+            showToast(result.message, 'error');
+        }
+        setIsSubmitting(false);
     };
 
     return (
@@ -119,6 +115,9 @@ const Login = () => {
                             />
                             Remember me
                         </label>
+                        <Link to="/forgot-password" style={styles.forgotLink}>
+                            Forgot password?
+                        </Link>
                     </div>
 
                     <motion.button
@@ -294,6 +293,12 @@ const styles = {
         color: 'var(--color-subtext)',
     },
     link: {
+        color: 'var(--color-primary)',
+        fontWeight: 600,
+        textDecoration: 'none',
+    },
+    forgotLink: {
+        fontSize: '14px',
         color: 'var(--color-primary)',
         fontWeight: 600,
         textDecoration: 'none',

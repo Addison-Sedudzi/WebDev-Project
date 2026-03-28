@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReadinessScore from '../components/ReadinessScore';
+import { useHistory } from '../hooks/useHistory';
 
 // Dataset based exactly on rubric images
 const universities = [
@@ -17,23 +18,23 @@ const universities = [
 const Readiness = () => {
     const [userGpa, setUserGpa] = useState('');
     const [selectedUniId, setSelectedUniId] = useState('');
+    const { history } = useHistory();
 
     useEffect(() => {
-        // Attempt to pull latest GPA
-        const history = JSON.parse(localStorage.getItem('gradesync_history') || '[]');
         if (history.length > 0) {
             setUserGpa(history[0].gpa.toFixed(2));
         }
-    }, []);
+    }, [history]);
 
     const selectedUni = universities.find(u => u.id === selectedUniId);
 
     return (
         <div className="main-content">
-            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-                <h1 className="page-title">University Readiness Score</h1>
-                <p style={{ maxWidth: '600px', margin: '0 auto', color: 'var(--color-subtext)' }}>
-                    See how your GPA stacks up against the minimum and competitive requirements of top global universities.
+            <div style={{ marginBottom: '32px' }}>
+                <span className="badge">Admissions</span>
+                <h1 className="page-title" style={{ marginTop: '10px', marginBottom: '8px' }}>University Readiness</h1>
+                <p style={{ color: 'var(--color-subtext)', fontSize: '15px', maxWidth: '520px' }}>
+                    See how your GPA stacks up against top global universities — from Berkeley to Cape Town.
                 </p>
             </div>
 
@@ -67,13 +68,13 @@ const Readiness = () => {
                 </div>
             )}
 
-            <div style={{ marginTop: '40px', padding: '24px', backgroundColor: 'var(--color-primary)', color: 'white', borderRadius: '8px' }}>
-                <h3 style={{ color: 'var(--color-highlight)', marginBottom: '16px' }}>What Admissions Actually Care About</h3>
+            <div style={{ marginTop: '40px', padding: '24px', backgroundColor: 'var(--color-white)', borderRadius: '10px', borderLeft: '4px solid var(--color-primary)', boxShadow: 'var(--shadow-sm)' }}>
+                <h3 style={{ color: 'var(--color-primary)', marginBottom: '16px' }}>What Admissions Actually Care About</h3>
                 <ul style={{ paddingLeft: '20px', lineHeight: 1.8 }}>
-                    <li><strong>Statement of Purpose (SOP):</strong> Your written explanation of why you want to study the program.</li>
-                    <li><strong>Letters of Recommendation (LORs):</strong> From lecturers or employers who know your work.</li>
-                    <li><strong>Relevant Work Experience:</strong> Internships in your field matter significantly.</li>
-                    <li><strong>Standardized Tests:</strong> GRE/GMAT and English proficiency (IELTS/TOEFL) may be required.</li>
+                    <li style={{ color: 'var(--color-subtext)' }}><strong style={{ color: 'var(--color-text)' }}>Statement of Purpose (SOP):</strong> Your written explanation of why you want to study the program.</li>
+                    <li style={{ color: 'var(--color-subtext)' }}><strong style={{ color: 'var(--color-text)' }}>Letters of Recommendation (LORs):</strong> From lecturers or employers who know your work.</li>
+                    <li style={{ color: 'var(--color-subtext)' }}><strong style={{ color: 'var(--color-text)' }}>Relevant Work Experience:</strong> Internships in your field matter significantly.</li>
+                    <li style={{ color: 'var(--color-subtext)' }}><strong style={{ color: 'var(--color-text)' }}>Standardized Tests:</strong> GRE/GMAT and English proficiency (IELTS/TOEFL) may be required.</li>
                 </ul>
             </div>
         </div>

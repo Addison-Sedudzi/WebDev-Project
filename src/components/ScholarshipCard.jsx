@@ -1,5 +1,6 @@
 import React from 'react';
 import { ExternalLink, CheckCircle, AlertTriangle } from 'lucide-react';
+import Tilt3D from './Tilt3D';
 
 const ScholarshipCard = ({ scholarship, userGpa }) => {
     const isEligible = userGpa >= scholarship.minGpa;
@@ -11,38 +12,40 @@ const ScholarshipCard = ({ scholarship, userGpa }) => {
     if (userGpa && status === 'ineligible') return null; // Hide completely ineligible ones
 
     return (
-        <div className="card" style={{ ...styles.card, borderLeft: `4px solid ${styles.statusColors[status]}` }}>
-            <div style={styles.header}>
-                <h3 style={styles.title}>{scholarship.name}</h3>
-                {status === 'eligible' && <span style={styles.badge(styles.statusColors.eligible)}><CheckCircle size={14} /> Eligible</span>}
-                {status === 'near_miss' && <span style={styles.badge(styles.statusColors.near_miss)}><AlertTriangle size={14} /> Near Miss</span>}
+        <Tilt3D intensity={5} scale={1.03}>
+            <div className="card" style={{ ...styles.card, borderLeft: `4px solid ${styles.statusColors[status]}` }}>
+                <div style={styles.header}>
+                    <h3 style={styles.title}>{scholarship.name}</h3>
+                    {status === 'eligible' && <span style={styles.badge(styles.statusColors.eligible)}><CheckCircle size={14} /> Eligible</span>}
+                    {status === 'near_miss' && <span style={styles.badge(styles.statusColors.near_miss)}><AlertTriangle size={14} /> Near Miss</span>}
+                </div>
+
+                <p style={styles.description}>{scholarship.description}</p>
+
+                <div style={styles.detailsGrid}>
+                    <div>
+                        <span className="caption">Min GPA</span>
+                        <div style={styles.detailValue}>{scholarship.minGpa.toFixed(1)}+</div>
+                    </div>
+                    <div>
+                        <span className="caption">Destination</span>
+                        <div style={styles.detailValue}>{scholarship.destination}</div>
+                    </div>
+                    <div>
+                        <span className="caption">Field of Study</span>
+                        <div style={styles.detailValue}>{scholarship.field}</div>
+                    </div>
+                </div>
+
+                <button
+                    className="btn-secondary"
+                    style={styles.button}
+                    onClick={() => window.open(scholarship.url, '_blank', 'noopener,noreferrer')}
+                >
+                    View Details <ExternalLink size={16} />
+                </button>
             </div>
-
-            <p style={styles.description}>{scholarship.description}</p>
-
-            <div style={styles.detailsGrid}>
-                <div>
-                    <span className="caption">Min GPA</span>
-                    <div style={styles.detailValue}>{scholarship.minGpa.toFixed(1)}+</div>
-                </div>
-                <div>
-                    <span className="caption">Destination</span>
-                    <div style={styles.detailValue}>{scholarship.destination}</div>
-                </div>
-                <div>
-                    <span className="caption">Field of Study</span>
-                    <div style={styles.detailValue}>{scholarship.field}</div>
-                </div>
-            </div>
-
-            <button
-                className="btn-secondary"
-                style={styles.button}
-                onClick={() => window.open(scholarship.url, '_blank', 'noopener,noreferrer')}
-            >
-                View Details <ExternalLink size={16} />
-            </button>
-        </div>
+        </Tilt3D>
     );
 };
 

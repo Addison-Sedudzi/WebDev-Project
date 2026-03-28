@@ -4,10 +4,11 @@ import PlannerForm from '../components/PlannerForm';
 const ImprovementPlanner = () => {
     return (
         <div className="main-content">
-            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-                <h1 className="page-title">GPA Improvement Planner</h1>
-                <p style={{ maxWidth: '600px', margin: '0 auto', color: 'var(--color-subtext)' }}>
-                    Find out exactly what average you need per semester to hit your graduation targets. Don't leave your final class to chance.
+            <div style={{ marginBottom: '32px' }}>
+                <span className="badge">Planner</span>
+                <h1 className="page-title" style={{ marginTop: '10px', marginBottom: '8px' }}>Improvement Planner</h1>
+                <p style={{ color: 'var(--color-subtext)', fontSize: '15px', maxWidth: '520px' }}>
+                    Find the exact average you need each semester to hit your graduation target. No guesswork.
                 </p>
             </div>
 

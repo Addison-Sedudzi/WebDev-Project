@@ -1,97 +1,133 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '../supabaseClient';
 
 const AuthContext = createContext(null);
 
 export const useAuth = () => useContext(AuthContext);
+
+const formatUser = (supabaseUser) => {
+    if (!supabaseUser) return null;
+    return {
+        id: supabaseUser.id,
+        email: supabaseUser.email,
+        fullName: supabaseUser.user_metadata?.full_name || '',
+        studentId: supabaseUser.user_metadata?.student_id || '',
+        program: supabaseUser.user_metadata?.program || '',
+        level: supabaseUser.user_metadata?.level || '',
+    };
+};
 
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Check for existing session on mount
-        const session = JSON.parse(localStorage.getItem('gradesync_session') || 'null');
-        if (session) {
-            setCurrentUser(session);
-        }
-        setLoading(false);
-    }, []);
-
-    const register = (userData) => {
-        const users = JSON.parse(localStorage.getItem('gradesync_users') || '[]');
-
-        // Check if email already exists
-        if (users.find(u => u.email === userData.email)) {
-            return { success: false, message: 'An account with this email already exists.' };
-        }
-
-        // Check if student ID already exists
-        if (users.find(u => u.studentId === userData.studentId)) {
-            return { success: false, message: 'This Student ID is already registered.' };
-        }
-
-        const newUser = {
-            id: Date.now().toString(),
-            fullName: userData.fullName,
-            studentId: userData.studentId,
-            email: userData.email,
-            password: userData.password, // In a real app, this would be hashed
-            program: userData.program,
-            level: userData.level,
-            createdAt: new Date().toISOString()
+        const getSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            setCurrentUser(session?.user ? formatUser(session.user) : null);
+            setLoading(false);
         };
 
-        users.push(newUser);
-        localStorage.setItem('gradesync_users', JSON.stringify(users));
+        getSession();
 
-        // Auto-login after registration
-        const sessionUser = { ...newUser };
-        delete sessionUser.password;
-        localStorage.setItem('gradesync_session', JSON.stringify(sessionUser));
-        setCurrentUser(sessionUser);
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setCurrentUser(session?.user ? formatUser(session.user) : null);
+            setLoading(false);
+        });
 
-        return { success: true, message: 'Account created successfully!' };
+        return () => subscription.unsubscribe();
+    }, []);
+
+    const register = async (userData) => {
+        try {
+            const { data, error } = await supabase.auth.signUp({
+                email: userData.email,
+                password: userData.password,
+                options: {
+                    data: {
+                        full_name: userData.fullName,
+                        student_id: userData.studentId,
+                        program: userData.program,
+                        level: userData.level,
+                    }
+                }
+            });
+
+            if (error) return { success: false, message: error.message };
+
+            if (data.user && !data.session) {
+                return { success: false, requiresConfirmation: true, message: 'Please check your email to confirm your account before signing in.' };
+            }
+
+            return { success: true, message: 'Account created successfully!' };
+        } catch (err) {
+            return { success: false, message: err.message };
+        }
     };
 
-    const login = (email, password, rememberMe = false) => {
-        const users = JSON.parse(localStorage.getItem('gradesync_users') || '[]');
-        const user = users.find(u => u.email === email && u.password === password);
-
-        if (!user) {
-            return { success: false, message: 'Invalid email or password.' };
+    const login = async (email, password) => {
+        try {
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) return { success: false, message: error.message };
+            return { success: true, user: data.user };
+        } catch (err) {
+            return { success: false, message: err.message };
         }
-
-        const sessionUser = { ...user };
-        delete sessionUser.password;
-
-        if (rememberMe) {
-            localStorage.setItem('gradesync_session', JSON.stringify(sessionUser));
-        } else {
-            sessionStorage.setItem('gradesync_session', JSON.stringify(sessionUser));
-            localStorage.setItem('gradesync_session', JSON.stringify(sessionUser));
-        }
-
-        setCurrentUser(sessionUser);
-        return { success: true, message: 'Login successful!' };
     };
 
-    const logout = () => {
-        localStorage.removeItem('gradesync_session');
-        sessionStorage.removeItem('gradesync_session');
+    const logout = async () => {
+        await supabase.auth.signOut();
         setCurrentUser(null);
     };
 
-    const updateProfile = (updates) => {
-        const users = JSON.parse(localStorage.getItem('gradesync_users') || '[]');
-        const index = users.findIndex(u => u.id === currentUser.id);
-        if (index !== -1) {
-            users[index] = { ...users[index], ...updates };
-            localStorage.setItem('gradesync_users', JSON.stringify(users));
-            const sessionUser = { ...users[index] };
-            delete sessionUser.password;
-            localStorage.setItem('gradesync_session', JSON.stringify(sessionUser));
-            setCurrentUser(sessionUser);
+    const deleteAccount = async () => {
+        try {
+            // Calls a Postgres function in Supabase that deletes the current user
+            const { error } = await supabase.rpc('delete_user');
+            if (error) return { success: false, message: error.message };
+            await supabase.auth.signOut();
+            setCurrentUser(null);
+            return { success: true };
+        } catch (err) {
+            return { success: false, message: err.message };
         }
+    };
+
+    const forgotPassword = async (email) => {
+        try {
+            const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${window.location.origin}/reset-password`,
+            });
+            if (error) return { success: false, message: error.message };
+            return { success: true, message: 'Password reset email sent! Check your inbox.' };
+        } catch (err) {
+            return { success: false, message: err.message };
+        }
+    };
+
+    const resetPassword = async (newPassword) => {
+        try {
+            const { error } = await supabase.auth.updateUser({ password: newPassword });
+            if (error) return { success: false, message: error.message };
+            return { success: true, message: 'Password updated successfully!' };
+        } catch (err) {
+            return { success: false, message: err.message };
+        }
+    };
+
+    const updateProfile = async (updates) => {
+        const { data, error } = await supabase.auth.updateUser({
+            data: {
+                full_name: updates.fullName ?? currentUser?.fullName,
+                student_id: updates.studentId ?? currentUser?.studentId,
+                program: updates.program ?? currentUser?.program,
+                level: updates.level ?? currentUser?.level,
+            }
+        });
+        if (!error && data.user) {
+            setCurrentUser(formatUser(data.user));
+        }
+        return { success: !error, message: error?.message };
     };
 
     const value = {
@@ -101,7 +137,10 @@ export const AuthProvider = ({ children }) => {
         register,
         login,
         logout,
-        updateProfile
+        forgotPassword,
+        resetPassword,
+        deleteAccount,
+        updateProfile,
     };
 
     return (

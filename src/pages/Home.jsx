@@ -70,10 +70,10 @@ const Home = () => {
             </motion.div>
 
             <section style={styles.featuresSection}>
-                <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-                    <h2 className="section-heading">Everything You Need to Succeed</h2>
-                    <p style={{ color: 'var(--color-subtext)', maxWidth: '600px', margin: '0 auto' }}>
-                        GradeSync is more than a calculator. It's a complete academic intelligence platform tailored specifically for your journey as a KNUST student.
+                <div style={{ marginBottom: '32px' }}>
+                    <h2 className="section-heading">What GradeSync Can Do</h2>
+                    <p style={{ color: 'var(--color-subtext)', fontSize: '15px', maxWidth: '520px', marginTop: '6px' }}>
+                        Six tools built specifically for KNUST students — from GPA conversion to scholarship matching.
                     </p>
                 </div>
 

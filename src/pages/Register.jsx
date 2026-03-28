@@ -96,23 +96,23 @@ const Register = () => {
         return { label: 'Strong', color: '#059669', width: '100%' };
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!validate()) return;
 
         setIsSubmitting(true);
-
-        setTimeout(() => {
-            const result = register(formData);
-            if (result.success) {
-                showToast('Account created successfully! 🎓', 'success');
-                navigate('/');
-            } else {
-                setErrors({ general: result.message });
-                showToast(result.message, 'error');
-            }
-            setIsSubmitting(false);
-        }, 800);
+        const result = await register(formData);
+        if (result.success) {
+            showToast('Account created successfully! 🎓', 'success');
+            navigate('/');
+        } else if (result.requiresConfirmation) {
+            showToast('Check your email to confirm your account.', 'success');
+            navigate('/login');
+        } else {
+            setErrors({ general: result.message });
+            showToast(result.message, 'error');
+        }
+        setIsSubmitting(false);
     };
 
     const strength = getPasswordStrength();

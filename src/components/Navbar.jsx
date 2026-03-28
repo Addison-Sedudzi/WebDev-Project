@@ -1,8 +1,7 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { BookOpen, Sun, Moon, LogOut, LogIn, UserPlus, Menu, X } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { BookOpen, Sun, Moon, LogIn, UserPlus, Menu, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { useToast } from '../context/ToastContext';
 import { useState } from 'react';
 
 const navItems = [
@@ -19,10 +18,8 @@ const navItems = [
 
 const Navbar = () => {
     const location = useLocation();
-    const navigate = useNavigate();
-    const { isAuthenticated, currentUser, logout } = useAuth();
+    const { isAuthenticated, currentUser } = useAuth();
     const { isDark, toggleTheme } = useTheme();
-    const { showToast } = useToast();
     const [mobileOpen, setMobileOpen] = useState(false);
 
     const isActive = (path) => {
@@ -30,15 +27,17 @@ const Navbar = () => {
         return location.pathname === path;
     };
 
-    // Hide navbar on login/register pages
-    if (location.pathname === '/login' || location.pathname === '/register') {
+    // Hide navbar on all auth pages
+    const authPages = ['/login', '/register', '/forgot-password', '/reset-password'];
+    if (authPages.includes(location.pathname)) {
         return null;
     }
 
-    const handleLogout = () => {
-        logout();
-        showToast('You have been logged out.', 'info');
-        navigate('/login');
+    const getInitials = (fullName) => {
+        if (!fullName) return '?';
+        const parts = fullName.trim().split(' ').filter(Boolean);
+        if (parts.length === 1) return parts[0][0].toUpperCase();
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
     };
 
     return (
@@ -80,13 +79,9 @@ const Navbar = () => {
 
                     {isAuthenticated ? (
                         <>
-                            <span style={styles.userName}>
-                                {currentUser?.fullName?.split(' ')[0]}
-                            </span>
-                            <button onClick={handleLogout} style={styles.logoutBtn}>
-                                <LogOut size={16} />
-                                Logout
-                            </button>
+                            <Link to="/profile" style={styles.initialsAvatar} title={currentUser?.fullName}>
+                                {getInitials(currentUser?.fullName)}
+                            </Link>
                         </>
                     ) : (
                         <>
@@ -136,7 +131,8 @@ const Navbar = () => {
 const styles = {
     navbar: {
         backgroundColor: 'var(--color-white)',
-        boxShadow: 'var(--shadow-sm)',
+        boxShadow: '0 1px 0 0 rgba(0,0,0,0.06)',
+        borderBottom: '2px solid #A5D6A7',
         position: 'sticky',
         top: 0,
         zIndex: 1000,
@@ -219,26 +215,21 @@ const styles = {
         alignItems: 'center',
         transition: 'background-color 0.25s ease',
     },
-    userName: {
-        fontSize: '14px',
-        fontWeight: 600,
-        color: 'var(--color-primary)',
-        display: 'none',
-    },
-    logoutBtn: {
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '6px',
-        padding: '8px 14px',
-        borderRadius: '8px',
-        border: '1px solid #E5E7EB',
-        backgroundColor: 'transparent',
-        color: 'var(--color-subtext)',
+    initialsAvatar: {
+        width: '36px',
+        height: '36px',
+        borderRadius: '50%',
+        background: 'linear-gradient(135deg, #1B5E20, #43A047)',
+        color: 'white',
+        fontWeight: 700,
         fontSize: '13px',
-        fontWeight: 500,
-        cursor: 'pointer',
-        fontFamily: "'Poppins', sans-serif",
-        transition: 'all 0.25s ease',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        textDecoration: 'none',
+        flexShrink: 0,
+        boxShadow: '0 2px 6px rgba(27, 94, 32, 0.35)',
+        transition: 'transform 0.2s ease, box-shadow 0.2s ease',
     },
     authLink: {
         display: 'inline-flex',
