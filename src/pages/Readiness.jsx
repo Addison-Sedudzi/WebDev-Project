@@ -39,7 +39,7 @@ const Readiness = () => {
             </div>
 
             <div className="card" style={{ maxWidth: '600px', margin: '0 auto 40px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div className="two-col-form" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                     <div>
                         <label>Your Target GPA (4.0 Scale)</label>
                         <input

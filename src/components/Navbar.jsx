@@ -53,7 +53,7 @@ const Navbar = () => {
 
                 {/* Desktop Menu */}
                 {isAuthenticated && (
-                    <div style={styles.desktopMenu}>
+                    <div style={styles.desktopMenu} className="nav-desktop-menu">
                         {navItems.map(({ to, label }) => (
                             <Link
                                 key={to}
@@ -99,6 +99,7 @@ const Navbar = () => {
                         <button
                             onClick={() => setMobileOpen(!mobileOpen)}
                             style={styles.hamburger}
+                            className="nav-hamburger"
                         >
                             {mobileOpen ? <X size={24} /> : <Menu size={24} />}
                         </button>
@@ -249,12 +250,13 @@ const styles = {
         textDecoration: 'none',
     },
     hamburger: {
-        display: 'none',
         background: 'none',
         border: 'none',
         cursor: 'pointer',
         padding: '6px',
         color: 'var(--color-text)',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     mobileMenu: {
         padding: '12px 24px 20px',
@@ -279,22 +281,5 @@ const styles = {
     },
 };
 
-// Add responsive styles via CSS (inject at module level)
-if (typeof document !== 'undefined') {
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = `
-        @media (max-width: 1024px) {
-            nav .desktop-menu-auto { display: none !important; }
-        }
-        @media (min-width: 1025px) {
-            nav button[data-hamburger] { display: none !important; }
-        }
-    `;
-    // Avoid duplicate injection
-    if (!document.querySelector('[data-gradesync-nav-styles]')) {
-        styleSheet.setAttribute('data-gradesync-nav-styles', 'true');
-        document.head.appendChild(styleSheet);
-    }
-}
 
 export default Navbar;

@@ -434,3 +434,110 @@ input::placeholder {
 [data-theme="dark"] footer a {
   color: #6EE7B7 !important;
 }
+
+/* ============================================================
+   Responsive Navbar — show/hide via class (inline styles cannot
+   respond to media queries, so we use className instead)
+   ============================================================ */
+.nav-desktop-menu {
+  display: flex;
+}
+
+.nav-hamburger {
+  display: none !important;
+}
+
+/* ============================================================
+   Mobile overrides  (≤ 768 px)
+   ============================================================ */
+@media (max-width: 768px) {
+  /* Navbar */
+  .nav-desktop-menu {
+    display: none !important;
+  }
+
+  .nav-hamburger {
+    display: flex !important;
+  }
+
+  /* Reduce navbar container padding */
+  nav > div {
+    padding: 10px 16px !important;
+  }
+
+  /* Hide auth text links on very small screens, keep icon/avatar */
+  .nav-auth-text {
+    display: none;
+  }
+
+  /* Main layout padding */
+  .main-content {
+    padding: 16px;
+  }
+
+  /* Card padding */
+  .card {
+    padding: 16px;
+  }
+
+  /* Hero section */
+  .hero-section {
+    padding: 36px 20px !important;
+    border-radius: 14px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .hero-title {
+    font-size: 28px !important;
+    line-height: 1.2 !important;
+  }
+
+  .hero-subtitle {
+    font-size: 14px !important;
+  }
+
+  /* Hide preview card on mobile — text content is what matters */
+  .hero-preview-card {
+    display: none !important;
+  }
+
+  /* Stack grid to single column on mobile */
+  .grid-layout-sidebar {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Stat number sizing */
+  .stat-number {
+    font-size: 40px;
+  }
+
+  /* Page title */
+  h1.page-title {
+    font-size: 24px;
+  }
+
+  /* Two-column form inputs → single column */
+  .two-col-form {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Auth page form padding */
+  .auth-card {
+    padding: 32px 20px !important;
+    border-radius: 14px !important;
+  }
+
+  /* Reduce chart height on mobile */
+  .chart-container {
+    height: 280px !important;
+  }
+}
+
+/* Dark mode table borders */
+[data-theme="dark"] td {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] th {
+  border-bottom-color: rgba(110, 231, 183, 0.15);
+}

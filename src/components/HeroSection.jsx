@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 const HeroSection = () => {
     return (
-        <section style={styles.hero}>
+        <section style={styles.hero} className="hero-section">
             {/* Background orbs for depth */}
             <motion.div
                 animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
@@ -22,11 +22,11 @@ const HeroSection = () => {
                 {/* Left — text */}
                 <div style={styles.textContainer}>
                     <div style={styles.eyebrow}>Built for KNUST Students</div>
-                    <h1 style={styles.title}>
+                    <h1 style={styles.title} className="hero-title">
                         Your CWA means<br />
                         more than you think.
                     </h1>
-                    <p style={styles.subtitle}>
+                    <p style={styles.subtitle} className="hero-subtitle">
                         GradeSync converts your KNUST score to a globally recognised GPA — then shows you the scholarships, universities, and opportunities you actually qualify for.
                     </p>
                     <div style={styles.ctaGroup}>
@@ -54,7 +54,7 @@ const HeroSection = () => {
                 </div>
 
                 {/* Right — preview card */}
-                <div style={styles.cardContainer}>
+                <div style={styles.cardContainer} className="hero-preview-card">
                     <motion.div
                         animate={{
                             y: [0, -12, 0],
