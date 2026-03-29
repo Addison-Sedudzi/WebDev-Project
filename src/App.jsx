@@ -6,6 +6,7 @@ import { ToastProvider } from './context/ToastContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+import GuestRoute from './components/GuestRoute';
 
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -32,11 +33,11 @@ function App() {
             <Navbar />
             <main>
               <Routes>
-                {/* Public Routes */}
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
+                {/* Public Routes — redirect to home if already logged in */}
+                <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
+                <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
+                <Route path="/forgot-password" element={<GuestRoute><ForgotPassword /></GuestRoute>} />
+                <Route path="/reset-password" element={<GuestRoute><ResetPassword /></GuestRoute>} />
 
                 {/* Protected Routes */}
                 <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
