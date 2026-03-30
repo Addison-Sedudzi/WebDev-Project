@@ -3,8 +3,8 @@ import { CheckCircle, XCircle } from 'lucide-react';
 import GradeSelector from './GradeSelector';
 import ResultDisplay from './ResultDisplay';
 import { convertCWAToGPA, getAcademicStanding } from '../utils/conversionAlgorithm';
-import { useNavigate } from 'react-router-dom';
 import { useHistory } from '../hooks/useHistory';
+import { useToast } from '../context/ToastContext';
 
 const CWAConverter = () => {
     const [cwa, setCwa] = useState('');
@@ -14,8 +14,7 @@ const CWAConverter = () => {
     const [result, setResult] = useState(null);
     const [standing, setStanding] = useState(null);
     const { addEntry } = useHistory();
-
-    const navigate = useNavigate();
+    const { showToast } = useToast();
 
     // Real-time validation and calculation
     useEffect(() => {
@@ -51,7 +50,7 @@ const CWAConverter = () => {
                 system: system,
                 source: 'converter',
             });
-            navigate('/scholarships');
+            showToast('GPA saved to your profile successfully!', 'success');
         }
     };
 
