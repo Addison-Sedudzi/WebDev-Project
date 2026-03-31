@@ -107,23 +107,47 @@ const Navbar = () => {
                 </div>
             </div>
 
-            {/* Mobile menu */}
-            {mobileOpen && isAuthenticated && (
-                <div style={styles.mobileMenu}>
-                    {navItems.map(({ to, label }) => (
-                        <Link
-                            key={to}
-                            to={to}
-                            onClick={() => setMobileOpen(false)}
-                            style={{
-                                ...styles.mobileNavLink,
-                                ...(isActive(to) ? styles.mobileNavLinkActive : {}),
-                            }}
-                        >
-                            {label}
-                        </Link>
-                    ))}
-                </div>
+            {/* Side drawer + backdrop (always mounted so CSS transition works both ways) */}
+            {isAuthenticated && (
+                <>
+                    <div
+                        className="nav-drawer-overlay"
+                        style={{ opacity: mobileOpen ? 1 : 0, pointerEvents: mobileOpen ? 'auto' : 'none' }}
+                        onClick={() => setMobileOpen(false)}
+                    />
+                    <div
+                        className="nav-drawer"
+                        style={{
+                            transform: mobileOpen ? 'translateX(0)' : 'translateX(100%)',
+                            backgroundColor: 'var(--color-white)',
+                        }}
+                    >
+                        <div style={styles.drawerHeader}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <BookOpen color="var(--color-primary)" size={22} />
+                                <span style={styles.logoText}>GradeSync</span>
+                            </div>
+                            <button onClick={() => setMobileOpen(false)} style={styles.drawerClose}>
+                                <X size={24} color="var(--color-subtext)" />
+                            </button>
+                        </div>
+                        <div style={{ flex: 1, overflowY: 'auto', padding: '8px 16px 24px' }}>
+                            {navItems.map(({ to, label }) => (
+                                <Link
+                                    key={to}
+                                    to={to}
+                                    onClick={() => setMobileOpen(false)}
+                                    style={{
+                                        ...styles.mobileNavLink,
+                                        ...(isActive(to) ? styles.mobileNavLinkActive : {}),
+                                    }}
+                                >
+                                    {label}
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                </>
             )}
         </nav>
     );
@@ -258,12 +282,23 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
     },
-    mobileMenu: {
-        padding: '12px 24px 20px',
+    drawerHeader: {
         display: 'flex',
-        flexDirection: 'column',
-        gap: '4px',
-        borderTop: '1px solid #E5E7EB',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '16px 20px',
+        borderBottom: '1px solid rgba(0,0,0,0.07)',
+        flexShrink: 0,
+    },
+    drawerClose: {
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        padding: '6px',
+        borderRadius: '8px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     mobileNavLink: {
         padding: '12px 16px',
