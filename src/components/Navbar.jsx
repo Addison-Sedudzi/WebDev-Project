@@ -301,13 +301,15 @@ const styles = {
         justifyContent: 'center',
     },
     mobileNavLink: {
-        padding: '12px 16px',
+        display: 'block',
+        padding: '13px 16px',
         borderRadius: '8px',
         textDecoration: 'none',
         fontSize: '15px',
         fontWeight: 500,
         color: 'var(--color-subtext)',
         transition: 'all 0.2s ease',
+        marginBottom: '4px',
     },
     mobileNavLinkActive: {
         fontWeight: 700,
